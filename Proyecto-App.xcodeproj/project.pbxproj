@@ -17,6 +17,7 @@
 		9394CA4F2282E26100E26C42 /* Proyecto_AppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9394CA4E2282E26100E26C42 /* Proyecto_AppUITests.swift */; };
 		9394CA5D2282E35200E26C42 /* CourseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9394CA5C2282E35200E26C42 /* CourseCell.swift */; };
 		9394CA5F2282E8B800E26C42 /* AddCourseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9394CA5E2282E8B800E26C42 /* AddCourseController.swift */; };
+		93A13718228AC49500B762FE /* EditCourseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93A13717228AC49500B762FE /* EditCourseController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 		9394CA502282E26100E26C42 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9394CA5C2282E35200E26C42 /* CourseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseCell.swift; sourceTree = "<group>"; };
 		9394CA5E2282E8B800E26C42 /* AddCourseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCourseController.swift; sourceTree = "<group>"; };
+		93A13717228AC49500B762FE /* EditCourseController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditCourseController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +114,7 @@
 				9394CA322282E25F00E26C42 /* Proyecto_App.xcdatamodeld */,
 				9394CA5C2282E35200E26C42 /* CourseCell.swift */,
 				9394CA5E2282E8B800E26C42 /* AddCourseController.swift */,
+				93A13717228AC49500B762FE /* EditCourseController.swift */,
 			);
 			path = "Proyecto-App";
 			sourceTree = "<group>";
@@ -269,6 +272,7 @@
 				9394CA342282E25F00E26C42 /* Proyecto_App.xcdatamodeld in Sources */,
 				9394CA2E2282E25F00E26C42 /* ViewController.swift in Sources */,
 				9394CA5F2282E8B800E26C42 /* AddCourseController.swift in Sources */,
+				93A13718228AC49500B762FE /* EditCourseController.swift in Sources */,
 				9394CA2C2282E25F00E26C42 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -8,14 +8,25 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, addCourse {
+class Course{
+    var name = ""
+    var _id = ""
+    convenience init(name: String, _id: String){
+        self.init()
+        self.name = name
+        self._id = _id
+    }
+}
+
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, addCourse, editCourse {
     
     var courses: [Course] = []
+    var editingIndex: Int? = nil
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // ------ I'm honestly NOT proud of this ------
+        // ------ I'm honestly NOT proud of what I did on this method ------
         guard let url = URL(string: "https://proyecto-api.herokuapp.com/courses") else { return }
         let session = URLSession.shared
         session.dataTask(with: url) { (data, response, error) in
@@ -56,16 +67,64 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return true
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if (editingStyle == .delete) {
-            // handle delete (by removing the data from your array and updating the tableview)
-            deleteCourse(courseIndex: indexPath.row)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let delete = deleteAction(at: indexPath)
+        return UISwipeActionsConfiguration(actions: [delete])
+    }
+    
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+        let edit = editAction(at: indexPath)
+        return UISwipeActionsConfiguration(actions: [edit])
+    }
+    
+    func editAction(at indexPath: IndexPath) -> UIContextualAction{
+        
+        self.editingIndex = indexPath.row // IMPORTANT awful patch for knowing which index of table I'm using for editing
+        
+        let action = UIContextualAction(style: .normal, title: "Edit"){ (action, view, completion) in
+            self.performSegue(withIdentifier: "showEditView", sender: self)
+            completion(true)
         }
+        
+        action.image = UIImage(named: "Edit")
+        action.backgroundColor = UIColor(red: 0.0275, green: 0.4353, blue: 0.6, alpha: 1.0) /* #076f99 */
+        
+        return action
+    }
+    
+    func deleteAction(at indexPath: IndexPath) -> UIContextualAction{
+        
+        let action = UIContextualAction(style: .normal, title: "Delete"){ (action, view, completion) in
+            self.deleteCourse(courseIndex: indexPath.row)
+            completion(true)
+        }
+        
+        action.image = UIImage(named: "Trash")
+        action.backgroundColor = UIColor(red: 0.6, green: 0.0863, blue: 0.0863, alpha: 1.0) /* #991616 */
+        
+        return action
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let vc = segue.destination as! AddCourseController
-        vc.delegate = self
+        if segue.destination is AddCourseController {
+            let vc = segue.destination as! AddCourseController
+            vc.delegate = self
+        }
+        else{
+            if segue.destination is EditCourseController {
+                if let vc = segue.destination as? EditCourseController{
+                    vc.course = courses[self.editingIndex!]
+                    vc.index = self.editingIndex
+                    vc.delegate = self
+                }
+            }
+        }
     }
     
     func addCourse(name: String) {
@@ -76,11 +135,18 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         callAPI(withParameters: parameters, withStringURL: stringUrl, withMethod: method)
     }
     
+    func editCourse(for course_id: String, withName name: String, atIndex index: Int) {
+        let parameters = ["name": name, "index": index] as [String: Any]
+        let stringUrl = "https://proyecto-api.herokuapp.com/courses/" + course_id
+        let method = "PUT"
+        
+        callAPI(withParameters: parameters, withStringURL: stringUrl, withMethod: method)
+    }
+    
     func deleteCourse(courseIndex: Int){
         let course_id = self.courses[courseIndex]._id
         let parameters = ["index": courseIndex] as [String: Any]
         let stringUrl = "https://proyecto-api.herokuapp.com/courses/" + course_id
-        print("String URL for DELETE: \(stringUrl)")
         let method = "DELETE"
     
         callAPI(withParameters: parameters, withStringURL: stringUrl, withMethod: method)
@@ -113,7 +179,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
                             self.courses.append(Course(name: name, _id: _id))
                         }
                         if method == "PUT"{
-                            
+                            guard let index = parameters["index"] as? Int else { return }
+                            guard let name = jsonObject["name"] as? String else { return }
+                            self.courses[index].name = name
                         }
                         if method == "DELETE"{
                             guard let index = parameters["index"] as? Int else { return }
@@ -128,21 +196,4 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             }
             }.resume()
     }
-    
-    
-
 }
-
-
-
-
-class Course{
-    var name = ""
-    var _id = ""
-    convenience init(name: String, _id: String){
-        self.init()
-        self.name = name
-        self._id = _id
-    }
-}
-

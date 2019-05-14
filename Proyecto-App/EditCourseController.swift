@@ -8,23 +8,32 @@
 
 import UIKit
 
-class EditCourseController: UIViewController {
+protocol editCourse{
+    func editCourse(for course_id: String, withName name: String, atIndex index: Int)
+}
 
+class EditCourseController: UIViewController, UITextFieldDelegate {
+
+    @IBOutlet weak var courseNameOutlet: UITextField!
+    var delegate: editCourse?
+    var course: Course?
+    var index: Int?
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        courseNameOutlet.delegate = self
+        courseNameOutlet.text = "\(course?.name ?? "Error at sending data")"
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    @IBAction func editAction(_ sender: Any) {
+        if courseNameOutlet.text != "" {
+            delegate?.editCourse(for: (course?._id)!, withName: courseNameOutlet.text!, atIndex: self.index!)
+            navigationController?.popViewController(animated: true)
+        }
     }
-    */
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
+    }
 
 }

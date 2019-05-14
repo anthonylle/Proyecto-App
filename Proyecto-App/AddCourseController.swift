@@ -13,7 +13,13 @@ protocol addCourse{
 }
 
 class AddCourseController: UIViewController, UITextFieldDelegate {
-
+    
+    var delegate: addCourse?
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        courseNameOutlet.delegate = self
+    }
+    
     @IBOutlet weak var courseNameOutlet: UITextField!
     @IBAction func addAction(_ sender: Any) {
         if courseNameOutlet.text != "" {
@@ -28,11 +34,7 @@ class AddCourseController: UIViewController, UITextFieldDelegate {
         return false
     }
     
-    var delegate: addCourse?
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        courseNameOutlet.delegate = self
-    }
+    
     
     
 }
